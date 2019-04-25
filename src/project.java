@@ -4,12 +4,12 @@ import java.util.Scanner;
 import java.util.Dictionary;
 import java.util.HashMap;
 
+
 public class project {
 
     private static int[][] readGraph(){
-        //int[][] adjMatrix;
-        //int[] row = new int[26];
-        int[][] column = new int[21][21];
+        Graph<String> inputGraph = new Graph<>();
+        int[][] column = new int[21][];
 
         String lineFromFile;
 
@@ -17,12 +17,24 @@ public class project {
             FileInputStream inFile = new FileInputStream("resources/graph_input.txt");
             Scanner fileScan = new Scanner(inFile);
             String firstLine = fileScan.nextLine();
-            String[] vertices = firstLine.split("\\s+");
+            String[] vertexNames = firstLine.split("\\s+");
+
+            HashMap<String, Integer> nodeKey = new HashMap<>();
+            for (int i=1; i<vertexNames.length; i++){
+                nodeKey.put(vertexNames[i], i);
+                inputGraph.addVertex(vertexNames[i]);
+            }
+            // test
+            System.out.println(nodeKey.entrySet());
+
 
             int i = 0;
             while (fileScan.hasNextLine()){
                 //int[] row = new int[21];
                 lineFromFile = fileScan.nextLine();
+
+                //inputGraph.addVertex(vertexNames[i])
+
 
                 // test
                 System.out.println(lineFromFile);
@@ -30,13 +42,15 @@ public class project {
                 String[] splitLine = lineFromFile.split("\\s+");
                 int[] row = new int[splitLine.length];
 
-                for (int j=1; j < splitLine.length; j++){       // skip first letter
-                    row[j-1] = Integer.valueOf(splitLine[j]);
+                for (int j=0; j < splitLine.length; j++){       // skip first letter
+                    if (j==0)
+                        //inputGraph.addVertex(splitLine[j], )
+
+                    row[j] = Integer.valueOf(splitLine[j]);
                 }
 
                 column[i] = row;
                 i++;
-                //row[i] = Integer.valueOf(splitLine[]);
             }
 
             inFile.close();
