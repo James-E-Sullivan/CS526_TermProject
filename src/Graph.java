@@ -2,29 +2,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.LinkedList;
 
 import net.datastructures.*;
 import sun.reflect.generics.tree.Tree;
 
-public class Graph<E> extends UnsortedTableMap<Graph.Vertex<E>, E> {
+public class Graph<V> extends LinkedList<V> {
 
     //---------- nested vertex class ----------
-    protected static class Vertex<E> {
-        private E name;
+    protected static class Vertex<V> {
+        private V name;
         private Integer directDistance;
-        //private HashMap<Vertex<E>, Integer> edgeMap;
-        private TreeMap<Vertex<E>, Integer> edgeMap;
+        //private HashMap<Vertex<K>, Integer> edgeMap;
+        private TreeMap<Vertex<V>, Integer> edgeMap;
         //private Vertex<E> shortEdge;
 
 
         // default constructor
-        public Vertex(E n){
+        public Vertex(V n){
             name = n;
         }
 
         /*
         // detailed constructor
-        public Vertex(E n, Integer dd, TreeMap<Vertex<E>, Integer> edges){
+        public Vertex(K n, Integer dd, TreeMap<Vertex<K>, Integer> edges){
             name = n;
             directDistance = dd;
             edgeMap = edges;
@@ -35,15 +36,15 @@ public class Graph<E> extends UnsortedTableMap<Graph.Vertex<E>, E> {
 
 
         // accessor methods
-        public E getName() {return name;}
+        public V getName() {return name;}
         public Integer getDirectDistance() {return directDistance;}
-        public TreeMap<Vertex<E>, Integer> getEdges() {return edgeMap;}
+        public TreeMap<Vertex<V>, Integer> getEdges() {return edgeMap;}
 
         /**
          * Iterates through edgeMap edges to find shortest edge.
          * @return Map.Entry (Vertex, weight pair) with smallest weight:
          */
-        public Map.Entry<Vertex<E>, Integer> getShortEdge() {
+        public Map.Entry<Vertex<V>, Integer> getShortEdge() {
             /*
             if (edgeMap.isEmpty())
                 return null;
@@ -67,14 +68,16 @@ public class Graph<E> extends UnsortedTableMap<Graph.Vertex<E>, E> {
         }
 
         // update methods
-        public void setName(E n) {name = n;}
+        public void setName(V n) {name = n;}
         public void setDirectDistance(Integer d) {directDistance = d;}
-        public void setEdgeMap(TreeMap<Vertex<E>, Integer> e) {edgeMap = e;}
-        public void addEdge(Vertex<E> v, Integer weight){
+        public void setEdgeMap(TreeMap<Vertex<V>, Integer> e) {edgeMap = e;}
+        public void addEdge(Vertex<V> v, Integer weight){
 
         }
     } //----------- end of nested vertex class -----------
 
+
+    protected LinkedList<Vertex<V>> graphContainer = new LinkedList<>();
 
 
     /*
@@ -85,25 +88,32 @@ public class Graph<E> extends UnsortedTableMap<Graph.Vertex<E>, E> {
 
      */
 
-    protected Vertex<E> addVertex(E name){
+    protected void addVertex(V name){
+        Vertex<V> newVertex = new Vertex<>(name);
+        graphContainer.add(newVertex);
         size++;
-        return new Vertex<E>(name);
+    }
+
+    protected Vertex<V> removeVertex(Vertex<V> v){
+        size--;
+        if (graphContainer.remove(v))
+            return v;
+        else
+            return null;
     }
 
     private HashMap<String, Integer> nodeKey;
     private int[][] adjArray;
-    private Vertex<E> destination = null;
-    private Vertex<E> startVertex = null;
+    private Vertex<V> destination = null;
+    private Vertex<V> startVertex = null;
     private int size = 0;
 
     // accessor methods
     public int size(){return size;}
-    public Vertex<E> getDestination(){return destination;}
-    public Vertex<E> getStartVertex(){return startVertex;}
-    public Vertex<E> getVertex(String name){
-        if (Graph.)
+    public Vertex<V> getDestination(){return destination;}
+    public Vertex<V> getStartVertex(){return startVertex;}
+    public Vertex<V> getVertex(String name){
 
-        return
     }
 
     // update methods
@@ -125,32 +135,24 @@ public class Graph<E> extends UnsortedTableMap<Graph.Vertex<E>, E> {
      */
 
 
-    public void printShortestPath(Vertex<E> start, Vertex<E> end){
-        Vertex<E> currentNode = start;
+    public void printShortestPath(Vertex<V> start, Vertex<V> end){
+        Vertex<V> currentNode = start;
         System.out.println("Current node = " + currentNode.getName());
 
         System.out.println("Adjacent Nodes: ");
-        for (Vertex<E> adjNode : currentNode.getEdges().keySet()){
+        for (Vertex<V> adjNode : currentNode.getEdges().keySet()){
             System.out.print(adjNode.getName() + ", ");
         }
 
-        for (Vertex<E> adjNode : currentNode.getEdges().keySet()){
+        for (Vertex<V> adjNode : currentNode.getEdges().keySet()){
             System.out.println(adjNode.getName() + ": dd(" +
                     adjNode.getName() + ") = " + adjNode.getDirectDistance());
         }
     }
 
-    public void algorithm1(Vertex<E> start, Vertex<E> end){
+    public void algorithm1(Vertex<V> start, Vertex<V> end){
         printShortestPath(start, end);
     }
 
-    @Override
-    public E put(Vertex<E> key, E value) {
-        return super.put(key, value);
-    }
 
-    @Override
-    public E remove(Vertex<E> key) {
-        return super.remove(key);
-    }
 }

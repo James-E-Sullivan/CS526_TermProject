@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class project {
 
     private static int[][] readGraph(){
-        Graph<String> inputGraph = new Graph<>();
+        Graph<Graph.Vertex<String>, String> inputGraph = new Graph<>();
         int[][] column = new int[21][];
 
         String lineFromFile;
@@ -17,9 +17,10 @@ public class project {
             FileInputStream inFile = new FileInputStream("resources/graph_input.txt");
             Scanner fileScan = new Scanner(inFile);
             String firstLine = fileScan.nextLine();
-            String[] vertexNames = firstLine.split("\\s+");
 
-            HashMap<String, Integer> nodeKey = new HashMap<>();
+            String[] vertexNames = firstLine.split("\\s+");     // 1st row, names of nodes
+
+            HashMap<String, Integer> nodeKey = new HashMap<>();        // hashmap for names
             for (int i=1; i<vertexNames.length; i++){
                 nodeKey.put(vertexNames[i], i);
                 inputGraph.addVertex(vertexNames[i]);
@@ -39,7 +40,12 @@ public class project {
                 // test
                 System.out.println(lineFromFile);
 
+
+
                 String[] splitLine = lineFromFile.split("\\s+");
+                inputGraph.addVertex(splitLine[0]);
+
+
                 int[] row = new int[splitLine.length];
 
                 for (int j=0; j < splitLine.length; j++){       // skip first letter
