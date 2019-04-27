@@ -17,8 +17,11 @@ public class Graph<V> extends LinkedList<V> {
         private TreeMap<Vertex<V>, Integer> edgeMap;
         //private Vertex<E> shortEdge;
 
+        //default constructor
+        public Vertex(){}
 
-        // default constructor
+
+        // name constructor
         public Vertex(V n){
             name = n;
         }
@@ -77,7 +80,9 @@ public class Graph<V> extends LinkedList<V> {
     } //----------- end of nested vertex class -----------
 
 
-    protected LinkedList<Vertex<V>> graphContainer = new LinkedList<>();
+    //protected LinkedList<Vertex<V>> graphContainer = new LinkedList<>();
+
+    protected HashMap<V, Vertex<V>> graphContainer = new HashMap<>();
 
 
     /*
@@ -90,20 +95,32 @@ public class Graph<V> extends LinkedList<V> {
 
     protected void addVertex(V name){
         Vertex<V> newVertex = new Vertex<>(name);
-        graphContainer.add(newVertex);
+        graphContainer.put(newVertex.getName(), newVertex);
         size++;
+    }
+
+    // find vertex by name
+    public Vertex<V> findVertex(V name){
+        if (graphContainer.containsKey(name)){
+            return graphContainer.get(name);
+        }
+        return null;
     }
 
     protected Vertex<V> removeVertex(Vertex<V> v){
         size--;
-        if (graphContainer.remove(v))
+        if (graphContainer.containsValue(v)){
+            graphContainer.remove(v.getName());
             return v;
-        else
-            return null;
+        }
+        return null;
     }
 
-    private HashMap<String, Integer> nodeKey;
-    private int[][] adjArray;
+    public void addVertexEdge(Vertex<V> targetVertex, Vertex<V> edgeVertex, Integer weight){
+        targetVertex.addEdge(edgeVertex, weight);
+    }
+
+
     private Vertex<V> destination = null;
     private Vertex<V> startVertex = null;
     private int size = 0;
@@ -112,27 +129,7 @@ public class Graph<V> extends LinkedList<V> {
     public int size(){return size;}
     public Vertex<V> getDestination(){return destination;}
     public Vertex<V> getStartVertex(){return startVertex;}
-    public Vertex<V> getVertex(String name){
 
-    }
-
-    // update methods
-    public void setAdjArray(int[][] inputArray){adjArray = inputArray;}
-    public void setNodeKey(HashMap<String, Integer> inputNK){nodeKey = inputNK;}
-
-    /*
-    public void addVertices(int[][] inputArray, HashMap<String, Integer> inputNodeKey){
-        for (int i=0; i < inputArray.length; i++){
-            addVertex(inputNodeKey.k)
-            for (int j=0; j < inputArray.length; j++){
-                if (inputArray[i][j] != 0){
-
-                }
-            }
-        }
-    }
-
-     */
 
 
     public void printShortestPath(Vertex<V> start, Vertex<V> end){
