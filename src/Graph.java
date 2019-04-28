@@ -13,6 +13,7 @@ public class Graph<K> {
         //private HashMap<Vertex<K>, Integer> edgeMap;
         private TreeMap<Integer, Vertex<K>> edgeMap = new TreeMap<>();
         private LinkedList<Vertex<K>> edgeQueue = new LinkedList<>();
+        private Vertex<K> prevNode;
         //private Vertex<E> shortEdge;
 
         //default constructor
@@ -78,6 +79,21 @@ public class Graph<K> {
                 edgeQueue.add(edge.getValue());
             }
         }
+
+        /*
+        protected void reorderEdgeQueue(Vertex<K> trailer){
+            for (Vertex<K> v : this.edgeQueue){
+                if (v == trailer){
+                    int tempIndex = this.edgeQueue.indexOf(v);
+                    Vertex<K> temp = this.edgeQueue.remove(tempIndex);
+                    this.edgeQueue.addLast(temp);
+                }
+            }
+        }
+
+         */
+
+
         public void addEdge(Integer weight, Vertex<K> v){
             edgeMap.put(weight, v);
         }
@@ -172,28 +188,76 @@ public class Graph<K> {
         Vertex<K> nextNode = smallestWeightQueue(trailerNode);        // nextNode chosen by shortestEdge
         trailerNode.edgeQueue.getFirst();                          // remove first value from Vertex edgeQueue
 
+
+
+        //TEST DELETE THIS
+        //TEST DELETE THIS
+        System.out.println("\n<<<<<<<<<<<0>>>>>>>>>>");
+        System.out.println("NextNode: " + nextNode.getName());
+        System.out.print("Smallest Weight of Next Node (Should have smallest weight + DD): ");
+        System.out.println(smallestWeightQueue(nextNode).getName());
+
+
+
+
+
         while (nextNode != end && nextNode != null){
             fullSequence.add(nextNode);         // add node to full sequence in all cases
+            reorderEdgeQueue(trailerNode, nextNode);
 
             if (nextNode.edgeQueue.size() == 0){
+
+
+                //TEST DELETE THIS
+                System.out.println("\n<<<<<<<<<<<1>>>>>>>>>>");
+                System.out.println("NextNode: " + nextNode.getName());
+                System.out.print("Next Node (Should have smallest weight + DD): ");
+                System.out.println(smallestWeightQueue(nextNode).getName());
+
+                //TEST DELETE IF THIS DOES NOT WORK
+                shortSequence.add(nextNode);
+
+
+
                 trailerNode = nextNode;
-                nextNode = shortSequence.getLast();
+                nextNode = nextNode.prevNode;
             }
 
             else if (shortSequence.contains(nextNode)){
+
                 totalLength -= trailerNode.edgeWeight(nextNode);    // remove length from last node to nextNode
                 shortSequence.removeLast();
+
+
+                //TEST DELETE THIS
+                System.out.println("\n<<<<<<<<<<<2>>>>>>>>>>");
+                System.out.println("NextNode: " + nextNode.getName());
+                System.out.print("Next Node (Should have smallest weight + DD): ");
+                System.out.println(smallestWeightQueue(nextNode).getName());
+
 
                 trailerNode = nextNode;
                 nextNode = smallestWeightQueue(nextNode);
                 trailerNode.edgeQueue.removeFirst();
             }
 
-            else if (nextNode.getEdgeQueue() != null){
+            else if (nextNode.getEdgeQueue().size() != 0){
                 totalLength += trailerNode.edgeWeight(nextNode);
                 shortSequence.add(nextNode);
 
                 trailerNode = nextNode;
+
+
+                //TEST DELETE THIS
+                System.out.println("\n<<<<<<<<<<<3>>>>>>>>>>");
+                System.out.println("NextNode: " + nextNode.getName());
+                System.out.print("Next Node (Should have smallest weight + DD): ");
+                System.out.println(smallestWeightQueue(nextNode).getName());
+
+
+
+
+
                 nextNode = smallestWeightQueue(nextNode);
                 trailerNode.edgeQueue.removeFirst();
             }
@@ -238,26 +302,43 @@ public class Graph<K> {
         while (nextNode != end && nextNode != null){
             fullSequence.add(nextNode);         // add node to full sequence in all cases
 
+
+            // TEST 2 DELETE IF THIS DOESN'T WORK
+
+
+
+
+            //test
+            reorderEdgeQueue(trailerNode, nextNode);
+
             if (nextNode.edgeQueue.size() == 0){
+                //reorderEdgeQueue(trailerNode, nextNode);
                 trailerNode = nextNode;
-                nextNode = shortSequence.getLast();
+
+                //TEST DELETE IF THIS DOES NOT WORK
+                shortSequence.add(nextNode);
+
+                //nextNode = shortSequence.getLast();
+                nextNode = nextNode.prevNode;
             }
 
             else if (shortSequence.contains(nextNode)){
                 totalLength -= trailerNode.edgeWeight(nextNode);    // remove length from last node to nextNode
                 shortSequence.removeLast();
-
+                //reorderEdgeQueue(trailerNode, nextNode);
                 trailerNode = nextNode;
                 nextNode = shortestDDQueue(nextNode);
+
                 trailerNode.edgeQueue.removeFirst();
             }
 
             else if (nextNode.getEdgeQueue() != null){
                 totalLength += trailerNode.edgeWeight(nextNode);
                 shortSequence.add(nextNode);
-
+                //reorderEdgeQueue(trailerNode, nextNode);
                 trailerNode = nextNode;
                 nextNode = shortestDDQueue(nextNode);
+
                 trailerNode.edgeQueue.removeFirst();
             }
         }
@@ -298,11 +379,37 @@ public class Graph<K> {
 
     private Vertex<K> smallestWeightQueue(Vertex<K> v){
         Vertex<K> smallestEdge = v.edgeQueue.getFirst();
+        Integer smallWeight = smallestEdge.edgeWeight(v) + smallestEdge.getDirectDistance();
         for(Vertex<K> node : v.edgeQueue){
-            if ((node.edgeWeight(v) + node.getDirectDistance()) < smallestEdge.getDirectDistance())
+            if ((node.edgeWeight(v) + node.getDirectDistance()) < smallWeight){
+                //TEST DELETE THIS
+                System.out.println("\nNode edgeWeight: " + node.edgeWeight(v));
+                System.out.println("Node DD: " + node.getDirectDistance());
+                System.out.println("edgeWeight + DD = " + (node.edgeWeight(v) + node.getDirectDistance()));
+                System.out.println("smallweight: " + smallWeight);
+
+
                 smallestEdge = node;
+            }
+
+
         }
         return smallestEdge;
+    }
+
+
+    /**
+     * Reorders edgeQueue of Vertex so its
+     * trailing node is the last Vertex in its queue.
+     * @param trailer: trailing node
+     * @param next: next node
+     */
+    protected void reorderEdgeQueue(Vertex<K> trailer, Vertex<K> next){
+        if (next.edgeQueue.contains(trailer)){
+            int tempIndex = next.edgeQueue.indexOf(trailer);
+            Vertex<K> temp = next.edgeQueue.remove(tempIndex);
+            next.prevNode = temp;
+        }
     }
 
 
