@@ -162,9 +162,10 @@ public class project {
          */
 
         // test algorithm1
+        System.out.println("\nAlgorithm 1");
         projectGraph.algorithm1();
 
-        System.out.println();
+        System.out.println("\nAlgorithm 2");
         projectGraph.algorithm2();
 
     }
