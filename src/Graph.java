@@ -190,26 +190,14 @@ public class Graph<K> {
         resetEdgeQueues();      // make sure edgeQueue values contain all edges
 
         Vertex<K> nextNode = trailerNode.shortDD().getValue();        // nextNode chosen by shortestEdge
-        trailerNode.edgeQueue.removeFirst();                          // remove first value from Vertex edgeQueue
+        trailerNode.edgeQueue.getFirst();                          // remove first value from Vertex edgeQueue
 
         while (nextNode != end && nextNode != null){
             fullSequence.add(nextNode);         // add node to full sequence in all cases
+            trailerNode.edgeQueue.removeFirst();
 
 
 
-            //TEST
-            System.out.println("\nTESTING>>>>>>>>>>>>>");
-            System.out.println("Trailer Node: " + trailerNode.getName());
-            System.out.print("Trailer Node Queue: ");
-            for (Vertex<K> v : trailerNode.edgeQueue)
-                System.out.print(v.getName() + ", ");
-            System.out.println("\nNext Node: " + nextNode.getName());
-            System.out.print("Next Node Queue: ");
-            for (Vertex<K> v : nextNode.edgeQueue)
-                System.out.print(v.getName() + ", ");
-            System.out.print("\nFull Sequence: ");
-            for (Vertex<K> v : fullSequence)
-                System.out.print(v.getName() + "->");
 
 
 
@@ -217,7 +205,8 @@ public class Graph<K> {
 
 
             if (nextNode.edgeQueue.size() == 0){
-                trailerNode.edgeQueue.removeFirst();
+
+                //trailerNode.edgeQueue.removeFirst();
                 trailerNode = nextNode;
                 nextNode = shortSequence.getLast();
             }
@@ -225,29 +214,44 @@ public class Graph<K> {
             else if (shortSequence.contains(nextNode)){
 
                 totalLength -= trailerNode.edgeWeight(nextNode);    // remove length from last node to nextNode
+                shortSequence.removeLast();
 
-                Vertex<K> temp = shortestDDQueue(trailerNode);
+                //Vertex<K> temp = shortestDDQueue(trailerNode);
                 trailerNode = nextNode;
-                nextNode = temp;
+
+                //is this the issues????
+                //trailerNode.edgeQueue.removeFirst();
+
+                nextNode = shortestDDQueue(nextNode);
             }
 
             else if (nextNode.getEdgeQueue() != null){
 
 
 
-
+                //TEST
+                System.out.println("\n<<<<<<<<<<<<TEST 3>>>>>>>>>>>>>");
+                System.out.println("Trailer Node: " + trailerNode.getName());
+                System.out.print("Trailer Node Queue: ");
+                for (Vertex<K> v : trailerNode.edgeQueue)
+                    System.out.print(v.getName() + ", ");
+                System.out.println("\nNext Node: " + nextNode.getName());
+                System.out.print("Next Node Queue: ");
+                for (Vertex<K> v : nextNode.edgeQueue)
+                    System.out.print(v.getName() + ", ");
+                System.out.print("\nFull Sequence: ");
+                for (Vertex<K> v : fullSequence)
+                    System.out.print(v.getName() + "->");
 
 
                 totalLength += trailerNode.edgeWeight(nextNode);
                 shortSequence.add(nextNode);
 
-                Vertex<K> temp = shortestDDQueue(trailerNode);
+                //Vertex<K> temp = shortestDDQueue(trailerNode);
                 trailerNode = nextNode;
-                trailerNode.edgeQueue.removeFirst();
-                nextNode = shortestDDQueue(temp);
-
+                //trailerNode.edgeQueue.removeFirst();
+                nextNode = shortestDDQueue(nextNode);
             }
-
         }
         // Path has reached the end
         totalLength += shortSequence.getLast().edgeWeight(nextNode);
