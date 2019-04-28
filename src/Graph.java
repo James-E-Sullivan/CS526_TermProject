@@ -194,7 +194,7 @@ public class Graph<K> {
 
         while (nextNode != end && nextNode != null){
             fullSequence.add(nextNode);         // add node to full sequence in all cases
-            trailerNode.edgeQueue.removeFirst();
+            //trailerNode.edgeQueue.removeFirst();
 
 
 
@@ -223,6 +223,7 @@ public class Graph<K> {
                 //trailerNode.edgeQueue.removeFirst();
 
                 nextNode = shortestDDQueue(nextNode);
+                trailerNode.edgeQueue.removeFirst();
             }
 
             else if (nextNode.getEdgeQueue() != null){
@@ -251,6 +252,7 @@ public class Graph<K> {
                 trailerNode = nextNode;
                 //trailerNode.edgeQueue.removeFirst();
                 nextNode = shortestDDQueue(nextNode);
+                trailerNode.edgeQueue.removeFirst();
             }
         }
         // Path has reached the end
